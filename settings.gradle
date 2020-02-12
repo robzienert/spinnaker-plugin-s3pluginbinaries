@@ -9,5 +9,17 @@
 
 rootProject.name = "plugin-s3pluginbinaries"
 
-include "gate-s3pluginbinaries",
-  "front50-s3pluginbinaries"
+include "s3pluginbinaries-core",
+  "s3pluginbinaries-front50",
+  "s3pluginbinaries-gate"
+
+def setBuildFile(project) {
+  project.buildFileName = "${project.name}.gradle"
+  project.children.each {
+    setBuildFile(it)
+  }
+}
+
+rootProject.children.each {
+  setBuildFile(it)
+}

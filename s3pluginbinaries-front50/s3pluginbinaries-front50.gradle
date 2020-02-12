@@ -1,0 +1,10 @@
+apply plugin: "io.spinnaker.plugin.service-extension"
+
+dependencies {
+  implementation project(":s3pluginbinaries-core")
+}
+
+spinnakerPlugin {
+  serviceName = "front50"
+  pluginClass = "io.spinnaker.pluginbinaries.Front50PluginBinariesPlugin"
+}

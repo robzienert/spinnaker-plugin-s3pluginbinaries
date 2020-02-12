@@ -7,9 +7,11 @@
 buildscript {
   repositories {
     maven { url "https://dl.bintray.com/spinnaker/gradle/" }
+    maven { url "https://plugins.gradle.org/m2/" }
   }
   dependencies {
     classpath("com.netflix.spinnaker.gradle:spinnaker-extensions:$spinnakerGradleVersion")
+    classpath("com.netflix.nebula:nebula-kotlin-plugin:$kotlinVersion")
   }
 }
 
@@ -17,21 +19,40 @@ plugins {
   id("com.palantir.git-version").version("0.12.2")
 }
 
-apply plugin: "io.spinnaker.plugin.bundler"
-
-spinnakerBundle {
-  pluginId = "io.spinnaker.s3pluginbinaries"
-  description = "Sets up Spinnaker to use S3 as its plugin binary storage backend."
-  provider = "https://spinnaker.io"
-  version = rootProject.version
-}
+//apply plugin: "io.spinnaker.plugin.bundler"
+//
+//spinnakerBundle {
+//  pluginId = "io.spinnaker.s3pluginbinaries"
+//  description = "Sets up Spinnaker to use S3 as its plugin binary storage backend."
+//  provider = "https://spinnaker.io"
+//  version = rootProject.version
+//}
 
 version = normalizedVersion()
 
 subprojects {
-  apply plugin: "java-library"
+  apply plugin: "nebula.kotlin"
+
   group = "io.spinnaker.pluginbinaries"
   version = rootProject.version
+
+  repositories {
+    mavenLocal()
+    jcenter()
+    maven { url "http://dl.bintray.com/spinnaker/spinnaker/" }
+  }
+
+  dependencies {
+    compileOnly("com.netflix.spinnaker.kork:kork-plugins-api:$korkVersion")
+    implementation("com.amazonaws:aws-java-sdk-s3:$awsVersion")
+  }
+
+  compileKotlin {
+    kotlinOptions {
+      languageVersion = "1.3"
+      jvmTarget = "1.8"
+    }
+  }
 }
 
 String normalizedVersion() {
